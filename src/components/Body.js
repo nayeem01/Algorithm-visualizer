@@ -4,7 +4,19 @@ import Input from "@material-ui/core/Input";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-import List from "@material-ui/core/List";
+
+import Timeline from "@material-ui/lab/Timeline";
+import TimelineItem from "@material-ui/lab/TimelineItem";
+import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
+import TimelineConnector from "@material-ui/lab/TimelineConnector";
+import TimelineContent from "@material-ui/lab/TimelineContent";
+import TimelineDot from "@material-ui/lab/TimelineDot";
+
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+
+import FormControl from "@material-ui/core/FormControl";
+
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,7 +44,6 @@ function Body() {
     const onChange = (event) => {
         setValue(event.target.value);
     };
-    console.log(isNaN(value));
     const inputArr = value
         ? value.split(",").map((item) => parseInt(item, 10))
         : [];
@@ -46,20 +57,25 @@ function Body() {
     }
     const isEnable = value !== "";
     const isSorted =
-        JSON.stringify(viewStep[count]) !==
+        JSON.stringify(viewStep[count]) ===
         JSON.stringify([...inputArr].sort((a, b) => a - b));
-    console.log(viewStep);
+    //console.log(viewStep);
     return (
         <>
-            5,3,2,4,1
-            <form noValidate autoComplete="off">
+            <FormControl fullWidth className={classes.margin}>
+                <InputLabel htmlFor="standard-adornment-amount">
+                    Input Ex: 5,3,2,4,1
+                </InputLabel>
                 <Input
-                    placeholder="input array Example: 1,4,5,3,2"
+                    id="standard-adornment-amount"
                     value={value}
                     onChange={onChange}
-                    inputProps={{ "aria-label": "description" }}
+                    startAdornment={
+                        <InputAdornment position="start">list</InputAdornment>
+                    }
+                    disabled={count > 0}
                 />
-            </form>
+            </FormControl>
             <div className={classes.root}>
                 {inputArr.map((items, id) => (
                     <Avatar key={id} className={classes.secondary}>
@@ -70,28 +86,34 @@ function Body() {
                     variant="contained"
                     color="secondary"
                     onClick={() => setCount(count + 1)}
-                    disabled={!isEnable || !isSorted}
+                    disabled={!isEnable || isSorted}
                 >
                     Insertion Sort
                 </Button>
             </div>
             <div>
                 <h3> step {count} : </h3>
-                {isSorted ? (
-                    Object.keys(viewStep).map((key, id) => (
-                        <List key={id} className={classes.root}>
-                            {viewStep[key].map((items, index) => (
-                                <Avatar
-                                    key={index}
-                                    className={classes.secondary}
-                                >
-                                    {items}
-                                </Avatar>
-                            ))}
-                        </List>
-                    ))
+                {!isSorted ? (
+                    <Timeline>
+                        {Object.keys(viewStep).map((key, id) => (
+                            <TimelineItem key={id}>
+                                <TimelineSeparator>
+                                    <TimelineDot />
+                                    <TimelineConnector />
+                                </TimelineSeparator>
+                                {viewStep[key].map((item, index) => (
+                                    <TimelineContent key={index}>
+                                        <Avatar className={classes.secondary}>
+                                            {item}
+                                        </Avatar>
+                                    </TimelineContent>
+                                ))}
+                            </TimelineItem>
+                        ))}
+                    </Timeline>
                 ) : (
                     <div className={classes.root}>
+                        <h3> SORTED List </h3>
                         {[...inputArr]
                             .sort((a, b) => a - b)
                             .map((items, id) => (
@@ -106,7 +128,7 @@ function Body() {
                         variant="contained"
                         color="primary"
                         onClick={() => setCount(count + 1)}
-                        disabled={!isEnable || !isSorted}
+                        disabled={!isEnable || isSorted}
                     >
                         nextStep
                     </Button>
