@@ -1,14 +1,23 @@
 import React from "react";
-import Body from "./components/Body";
-import { Container } from "@material-ui/core";
+import SideNav from "./components/SideNav";
+import BodyInsertion from "./components/BodyInsertion";
+import BodyBubble from "./components/BodyBubble";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Toolbar from "@material-ui/core/Toolbar";
 
 function App() {
     return (
-        <div className="App">
-            <Container>
-                <Body />
-            </Container>
-        </div>
+        <Router>
+            <div className="App">
+                <SideNav />
+                <Toolbar />
+
+                <Switch>
+                    <Route path="/" exact component={BodyInsertion} />
+                    <Route path="/bubble" exact component={BodyBubble} />
+                </Switch>
+            </div>
+        </Router>
     );
 }
 

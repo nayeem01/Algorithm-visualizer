@@ -18,6 +18,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControl from "@material-ui/core/FormControl";
 
 import { makeStyles } from "@material-ui/core/styles";
+import { Container } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
     root: {
         display: "flex",
@@ -34,9 +35,13 @@ const useStyles = makeStyles((theme) => ({
     sorted: {
         backgroundColor: "#f50057",
     },
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
+    },
 }));
 
-function Body() {
+function BodyInsertion() {
     const classes = useStyles();
     const [value, setValue] = useState("");
     const [count, setCount] = useState(0);
@@ -61,7 +66,7 @@ function Body() {
         JSON.stringify([...inputArr].sort((a, b) => a - b));
     //console.log(viewStep);
     return (
-        <>
+        <Container className={classes.content} maxWidth="sm">
             <FormControl fullWidth className={classes.margin}>
                 <InputLabel htmlFor="standard-adornment-amount">
                     Input Ex: 5,3,2,4,1
@@ -98,7 +103,11 @@ function Body() {
                         {Object.keys(viewStep).map((key, id) => (
                             <TimelineItem key={id}>
                                 <TimelineSeparator>
-                                    <TimelineDot />
+                                    <TimelineDot
+                                        color={
+                                            key % 2 ? "primary" : "secondary"
+                                        }
+                                    />
                                     <TimelineConnector />
                                 </TimelineSeparator>
                                 {viewStep[key].map((item, index) => (
@@ -144,8 +153,8 @@ function Body() {
                     </Button>
                 </ButtonGroup>
             </div>
-        </>
+        </Container>
     );
 }
 
-export default Body;
+export default BodyInsertion;
