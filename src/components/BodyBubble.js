@@ -18,7 +18,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControl from "@material-ui/core/FormControl";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Container } from "@material-ui/core";
+import { Container, List, ListItem, ListItemText } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
     root: {
         display: "flex",
@@ -46,7 +46,11 @@ const useStyles = makeStyles((theme) => ({
 function BodyBubble() {
     const classes = useStyles();
     const [value, setValue] = useState("");
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useState(1);
+    const [preview, setPreview] = useState(2);
+    const [sortStep, setSortStep] = useState([]);
+
+    const viewStep = {};
 
     const onChange = (event) => {
         setValue(event.target.value);
@@ -56,15 +60,19 @@ function BodyBubble() {
         : [];
 
     const step = Bubble([...inputArr]);
-    console.log(step);
-    //console.log(step[1][2].shift());
 
-    const viewStep = {};
     if (count > 0) {
         for (let i = 1; i <= count; i++) {
             viewStep[i] = step[0][i];
         }
     }
+    //let x = viewStep[1];
+
+    //setSortStep(viewStep[1]);
+    console.log(sortStep);
+    //console.log(x);
+    //console.log(viewStep[1]);
+
     const isEnable = value !== "";
     const isSorted =
         JSON.stringify(viewStep[count]) ===
@@ -86,7 +94,7 @@ function BodyBubble() {
                                 list
                             </InputAdornment>
                         }
-                        disabled={count > 0}
+                        disabled={count > 1}
                     />
                 </FormControl>
                 <div className={classes.root}>
@@ -98,7 +106,11 @@ function BodyBubble() {
                     <Button
                         variant="contained"
                         color="secondary"
-                        onClick={() => setCount(count + 1)}
+                        onClick={() => {
+                            setCount(count + 1);
+                            setPreview(preview + 1);
+                            setSortStep(step[0][preview]);
+                        }}
                         disabled={!isEnable || isSorted}
                     >
                         Bubble Sort
@@ -107,38 +119,54 @@ function BodyBubble() {
                 <div>
                     <h3> step {count} : </h3>
                     {!isSorted ? (
-                        <Timeline>
-                            {Object.keys(viewStep).map((key, id) => (
-                                <TimelineItem key={id}>
-                                    <TimelineSeparator>
-                                        <TimelineDot
-                                            color={
-                                                key % 2
-                                                    ? "primary"
-                                                    : "secondary"
+                        <div>
+                            <List>
+                                <ListItemText primary="Current State and Target Swap :" />
+                                <ListItem className={classes.root}>
+                                    {sortStep.map((items, idx) => (
+                                        <Avatar
+                                            key={idx}
+                                            className={
+                                                idx === step[1][count + 1] ||
+                                                idx === step[1][count + 1] + 1
+                                                    ? classes.selected
+                                                    : classes.secondary
                                             }
-                                        />
-                                        <TimelineConnector />
-                                    </TimelineSeparator>
-                                    {viewStep[key].map((item, index) => (
-                                        <TimelineContent key={index}>
-                                            <Avatar
-                                                className={
-                                                    index ===
-                                                        step[1][count + 1] ||
-                                                    index ===
-                                                        step[1][count + 1] + 1
-                                                        ? classes.selected
-                                                        : classes.secondary
-                                                }
-                                            >
-                                                {item}
-                                            </Avatar>
-                                        </TimelineContent>
+                                        >
+                                            {items}
+                                        </Avatar>
                                     ))}
-                                </TimelineItem>
-                            ))}
-                        </Timeline>
+                                </ListItem>
+                            </List>
+                            <Timeline>
+                                <ListItemText primary="Tree view" />
+                                {Object.keys(viewStep).map((key, id) => (
+                                    <TimelineItem key={id}>
+                                        <TimelineSeparator>
+                                            <TimelineDot
+                                                color={
+                                                    key % 2
+                                                        ? "primary"
+                                                        : "secondary"
+                                                }
+                                            />
+                                            <TimelineConnector />
+                                        </TimelineSeparator>
+                                        {viewStep[key].map((item, index) => (
+                                            <TimelineContent key={index}>
+                                                <Avatar
+                                                    className={
+                                                        classes.secondary
+                                                    }
+                                                >
+                                                    {item}
+                                                </Avatar>
+                                            </TimelineContent>
+                                        ))}
+                                    </TimelineItem>
+                                ))}
+                            </Timeline>
+                        </div>
                     ) : (
                         <div className={classes.root}>
                             <h3> SORTED List </h3>
@@ -155,7 +183,11 @@ function BodyBubble() {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => setCount(count + 1)}
+                            onClick={() => {
+                                setCount(count + 1);
+                                setPreview(preview + 1);
+                                setSortStep(step[0][preview]);
+                            }}
                             disabled={!isEnable || isSorted}
                         >
                             nextStep
@@ -164,8 +196,10 @@ function BodyBubble() {
                             variant="contained"
                             color="secondary"
                             onClick={() => {
-                                setCount(0);
+                                setCount(1);
                                 setValue("");
+                                setPreview(2);
+                                setSortStep([]);
                             }}
                         >
                             Reset
